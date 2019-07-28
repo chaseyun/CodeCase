@@ -1,0 +1,21 @@
+article{
+    width:800px;
+    margin: 0 auto;
+    padding: 20px;
+    /*实现文字渐变*/
+    background:-webkit-linear-gradient(top,red 0%,yellow 30%,greenyellow 40%,gold 60%,blue 70%,pink 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+h1{
+    text-align: center;
+}
+h3{
+    text-align: right;
+}
+p{
+    text-indent: 2em;
+    font-size: 16px;
+    color: #666;
+}
