@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <link rel="stylesheet" href="CSS/public.css">
+    <link rel="stylesheet" href="CSS/css-variable.css">
+    <title>CSS-变量鼠标跟随按钮变色</title>
+</head>
+<body>
+    <button class="button">
+        <span>css variable application</span>
+    </button>
+    <script>
+        document.querySelector('.button').onmousemove = (e) =>{
+            const x = e.pageX - e.target.offsetLeft;
+            const y = e.pageY - e.target.offsetTop;
+
+
+            //模板字符串 自定义变量
+            e.target.style.setProperty('--x',`${ x }px`);
+            e.target.style.setProperty('--y',`${ x }px`);
+        }
+    </script>
+</body>
+</html>
