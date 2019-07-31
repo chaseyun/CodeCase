@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <link rel="stylesheet" href="CSS/public.css">
+    <link rel="stylesheet" href="CSS/starSky.css">
+    <title>CANVAS绘制星空</title>
+</head>
+<body>
+    <canvas id="myCanvas" class="myCanvas"></canvas>
+    <script>
+        //获取画布
+        let myCanvas = document.querySelector('#myCanvas');
+        let ctx = myCanvas.getContext("2d");
+
+        //定义星星 
+        let stars = {};
+        let index = 0;
+
+        const windowWidth = 1920;
+        const windowHeight = 1080;
+        const initNum = 400;
+
+        drawCanvas();
+
+        //浏览器窗口改变时重新绘制canvas 星星重新生成
+        window.onresize = () =>{
+            drawCanvas();
+            createStarSky();
+        }
+
+        //定义画布的大小
+        function drawCanvas(){
+            let w = document.body.clientWidth||document.documentElement.clientWidth||window.innerWidth;
+            let h = document.body.clientHeight||document.documentElement.clientHeight||window.innerHeight;
+
+            myCanvas.setAttribute("width",w);
+            myCanvas.setAttribute("height",h);
+        }
+
+        //画布清除 填充
+        function redraw(){
+            ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+            ctx.fillStyle = "rgba(0,0,0,0)";
+            ctx.fillRect(0,0,myCanvas.width,myCanvas.height);
+        }
+
+        //星星类
+        class Star{
+            constructor(){
+                let w = myCanvas.width;
+                let h = myCanvas.height;
+                
+                //星星的坐标以及半径
+                this.x = getRandom(w);
+                this.y = getRandom(h);
+                this.r = getRandom(3);
+
+                //星星的运动速度 随机无规律运动
+                this.vx = Math.random() * 0.2 - 0.09;
+                this.vy = Math.random() * 0.2 - 0.09;
+
+                index++;
+                stars[index] = this;
+            }
+
+            draw(){
+                let w = myCanvas.width;
+                let h = myCanvas.height; 
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if(this.x > w){
+                    this.x = this.x - windowWidth;
+                }
+                
+                if(this.x < 0){
+                    this.x = windowWidth;
+                }
+                
+                if(this.y > h){
+                    this.y = this.y - windowHeight;
+                }
+                
+                if(this.y < 0){
+                    this.y = windowHeight;
+                }
+                
+                ctx.lineWidth = 0;
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+                ctx.fillStyle = "#688ab9";
+                ctx.shadowColor = "#688ab9";
+                ctx.shadowBlur = this.r*6;
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        //生成给定范围的随机数
+        function getRandom(range){
+            return Math.ceil(Math.random()*range);
+        }
+
+        //创建星空 星星位置随机
+        function createStarSky(){
+            
+            redraw();
+            
+            let w = myCanvas.width;
+            let h = myCanvas.height;
+            
+            let starNum = Math.ceil((w*h)/(windowWidth*windowHeight)*initNum);
+            
+            if(starNum > initNum){
+                
+                starNum = initNum;
+                // console.log(starNum)
+            }
+            
+            if ( Object.keys(stars).length > starNum ) {
+                starNum = 0;
+            }
+            
+            for(let i=0; i<starNum; i++){
+                    new Star();
+            }
+            
+            for(let i in stars){	
+                stars[i].draw();
+            }
+            
+            requestAnimationFrame(createStarSky);
+        }
+        
+        //requestAnimationFrame 兼容处理
+        if (!window.requestAnimationFrame) {
+            window.requestAnimationFrame = function(fn) {
+                setTimeout(fn, 17);
+            };
+        }
+
+        createStarSky();
+    </script>
+</body>
+</html>
