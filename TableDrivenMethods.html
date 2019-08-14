@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <title>表驱动法</title>
+</head>
+<body>
+    <script>
+        //表驱动法替代逻辑判断
+        // 直接访问 适用于索引值连续，有规律、者索引间隔不大、直接获取的值可以当做索引， 如月份 星期 
+        let daysPerMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+        let nowDate = new Date();
+        let nowMonth = nowDate.getMonth();
+        console.log(daysPerMonth[nowMonth]);
+        console.log(nowDate.getMonth());
+
+        //索引访问 建立索引表 索引表关联具体的数据 索引表类似于哈希表
+        //适用于 直接访问时索引间隔较大会造成空间浪费 
+
+        
+        //阶梯访问 与数学中的分段函数类似 在某一个区间的值 返回一个固定值或者使用某一个固定的方法
+        //访问区间根据实际自己定义 区间的取舍（小于或者小于等于）也可根据自己定义 
+        //以某网游中的宝石合成分阶段计算方法为例
+        //定义阶段
+        let rangeLimit = [4,12,13];
+        //定义索引最大值
+        let maxLimit = rangeLimit.length;
+        //对应方法的数组
+        let funArray = [needBaseGemNum1_4,needBaseGemNum5_12,needBaseGemNum13];
+
+        //计算方法采用递归 循环皆可递归 
+        //第一阶段 1-4级的宝石计算方法
+        function needBaseGemNum1_4(num){
+            if(num == 0){
+                return 0;
+            }else{
+                return Math.pow(2,num-1) + count(num - 1);
+            }
+        }
+
+        // 第二阶段 5-12级宝石计算方法 
+        //在上一级宝石的基础上合成宝石需要的4级宝石的数量
+        function needLevel4GemNumBasePrevLevel(num){
+            if(num == 5){
+                return 2;
+            }else{
+                return 1 + needLevel4GemNumBasePrevLevel(num - 1);
+            }
+        }
+
+        //某一个等级段合成宝石需要的4级宝石的数量
+        function needLevel4GemNumSummary(num){
+            if(num == 5){
+                return needLevel4GemNumBasePrevLevel(num);
+            }else{
+                return needLevel4GemNumBasePrevLevel(num) + needLevel4GemNumSummary(num - 1);
+            }
+        }
+
+        //返回基础宝石的数量 5-12级
+        function needBaseGemNum5_12(num){
+            return needLevel4GemNumSummary(num)*8 + 15;
+        }
+
+        //13等级宝石计算方法
+        function needBaseGemNum13(num){
+            return 511;
+        }
+
+        //计算方法
+        function count(num){
+            let index = 0;
+            if(num < 0 || num > 13){
+                console.log("安拉胡阿克巴！");
+            }else{
+                while(index < maxLimit){
+                    if(num <= rangeLimit[index]){
+                        return funArray[index](num);
+                    }
+                    index++;
+                }
+            }
+        }
+
+        console.log(count(12));
+    </script>
+</body>
+</html>
